@@ -24,8 +24,10 @@ def dibuja_casos(X, Y):
     neg = np.where(Y != 1)
 
     # Dibuja los ejemplos positivos y negativos
-    plt.scatter(X[pos, 0], X[pos, 1], marker='+', c='k', label='Admitted')
-    plt.scatter(X[neg, 0], X[neg, 1], c='green', label = 'Not admitted')
+    plt.scatter(X[pos, 0], X[pos, 1], marker='+', c='k', label='y = 1')
+    plt.scatter(X[neg, 0], X[neg, 1], c='green', label = 'y = 0')
+    plt.xlabel("Microchip test 1")
+    plt.ylabel("Microchip test 2")
     plt.legend(loc = 'upper right')
 
 def pinta_frontera_recta(X, Y, theta):
