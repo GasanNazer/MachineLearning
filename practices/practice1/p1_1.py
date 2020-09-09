@@ -73,12 +73,19 @@ Thetas, costes = descenso_gradiente(X, Y, alpha)
 
 #3D graphic
 #graphic_3D(X, Y)
+#plt.xlabel("θ_0")
+#plt.ylabel("θ_1")
 
 #contour
 contour(X, Y)
+plt.xlabel("θ_0")
+plt.ylabel("θ_1")
 plt.scatter(Thetas[0], Thetas[1], c = 'red', marker = 'x')
 
+
 #graphic with data
+#plt.xlabel("Población de la ciudad en 10.000s")
+#plt.ylabel("Ingresos en $10.000s")
 #plt.scatter(X[:, 1:], Y, c = 'red', marker = 'x')
 #plt.plot(X[:, 1], hypothesis(X, Thetas))
 plt.show()
