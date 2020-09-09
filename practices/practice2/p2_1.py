@@ -24,6 +24,8 @@ def dibuja_casos(X, Y):
 
     # Dibuja los ejemplos positivos y negativos
     plt.scatter(X[pos, 0], X[pos, 1], marker='+', c='k', label='Admitted')
+    plt.xlabel("Exam 1 score")
+    plt.ylabel("Exam 2 score")
     plt.scatter(X[neg, 0], X[neg, 1], c='green', label = 'Not admitted')
     plt.legend(loc = 'upper right')
 
@@ -61,6 +63,15 @@ def gradient(theta, X, Y):
     A = sigmoid(np.matmul(X, theta))
     return np.dot(X.T, (A - Y)) / len(Y)
 
+def classified_correct__percentage(theta, X, Y):
+    theta = theta.reshape((len(theta), 1))
+    A = sigmoid(np.matmul(X, theta))
+    predictions = [1 if a > 0.5 else 0 for a in A]
+    different = 0
+    for i in range(len(predictions)):
+        if predictions[i] != Y[i]:
+            different += 1
+    return len(predictions) - different / len(predictions) * 100
 
 def model(x, Y):
     X = np.hstack([np.ones([m, 1]), x])
@@ -68,6 +79,7 @@ def model(x, Y):
     result = opt.fmin_tnc (func=cost, x0=theta, fprime=gradient, args = (X, Y))
     theta = result[0]
     print('cost: ' + str(cost(result[0], X, Y)))
+    print('predicted correctly: ' + str(classified_correct__percentage(theta, X, Y)) + "%")
     pinta_frontera_recta(x, Y, theta)
     dibuja_casos(x, Y)
 
