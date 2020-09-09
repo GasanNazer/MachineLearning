@@ -67,10 +67,7 @@ def classified_correct__percentage(theta, X, Y):
     theta = theta.reshape((len(theta), 1))
     A = sigmoid(np.matmul(X, theta))
     predictions = [1 if a > 0.5 else 0 for a in A]
-    different = 0
-    for i in range(len(predictions)):
-        if predictions[i] != Y[i]:
-            different += 1
+    different = np.sum(predictions != Y)
     return len(predictions) - different / len(predictions) * 100
 
 def model(x, Y):
