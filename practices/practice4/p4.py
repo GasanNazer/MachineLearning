@@ -115,6 +115,13 @@ def modelo(input_size, num_labels, X, Y, y_onehot, reg, iterations):
     parameters['theta2'] = theta2
     AL, _ = L_model_forward(X, parameters)
     indexes = np.argmax(AL, axis=1)
-    print(str(np.sum(indexes == Y.ravel())/len(X)*100)+"%")
+    return str(np.sum(indexes == Y.ravel())/len(X)*100)+"%"
 
-modelo(input_size, num_labels, X, y, y_onehot, 1, 70)
+
+lambd = [1, 1.5, 2]
+iterations = [50, 70, 100, 200, 300]
+
+for i in iterations:
+    for rate in lambd:
+        print(f'Accuracy {modelo(input_size, num_labels, X, y, y_onehot, rate, i)},when 𝝺= {rate} and № of iterations={i}')
+    print("------------------------------------------")
