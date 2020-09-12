@@ -103,6 +103,8 @@ def model_polinomial_regression(X, X_pol, norm, y, reg): #X[:, 1:] expected
     
     plt.scatter(X, y, c = 'red', marker = 'x')
     plt.plot(dots, hypothesis(dots_pol, theta))
+    plt.xlabel("Change in water level (x)")
+    plt.ylabel("Water flowing out of the dam (y)")
     '''
     return theta
 
@@ -125,11 +127,14 @@ def graphic_pol(X, y, X_val, y_val, reg):
         theta = model_polinomial_regression(None, X[0 : i], None, y[0 : i], reg)
         error_dots[i - 1] = gradient(theta, X[0:i], y[0:i], reg)[0]
         error_val[i - 1] = gradient(theta, X_val, y_val, reg)[0]
-    plt.plot(dots, error_dots)
-    plt.plot(dots, error_val)
+    plt.plot(dots, error_dots, label='Train')
+    plt.plot(dots, error_val,  label='Cross Validation')
+    plt.xlabel("Number of training examples")
+    plt.ylabel("Error")
+    plt.legend(loc = 'upper right')
 
 
-#graphic_pol(X_pol, y, X_val_pol, y_val, 1)
+#graphic_pol(X_pol, y, X_val_pol, y_val, 0)
 
 
 #########################
@@ -144,8 +149,11 @@ def choose_lambda(X, y, X_val, y_val):
         theta = model_polinomial_regression(None, X, None, y, lambd[i])
         error_dots[i] = gradient(theta, X, y, lambd[i])[0]
         error_val[i] = gradient(theta, X_val, y_val, lambd[i])[0]
-    plt.plot(lambd, error_dots)
-    plt.plot(lambd, error_val)
+    plt.plot(lambd, error_dots, label='Train')
+    plt.plot(lambd, error_val, label='Cross Validation')
+    plt.xlabel("lambda")
+    plt.ylabel("Error")
+    plt.legend(loc = 'upper right')
 
 #choose_lambda(X_pol, y, X_val_pol, y_val)
 
@@ -156,6 +164,6 @@ X_test_pol = (X_test_pol - norm[1]) / norm[2]
 X_test_pol = np.hstack([np.ones([len(X_test), 1]), X_test_pol])
 
 theta = model_polinomial_regression(None, X_pol, None, y, 3)
-#print(gradient(theta, X_test_pol, y_test, 0)[0])
+print(gradient(theta, X_test_pol, y_test, 0)[0])
 
 plt.show()
