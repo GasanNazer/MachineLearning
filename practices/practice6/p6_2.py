@@ -58,4 +58,4 @@ c, sigma = choose_params(X_train, y_train.ravel(), X_val, y_val.ravel())
 
 clf = svm.SVC(kernel='rbf', C=c, gamma = 1 / (2* sigma ** 2))
 clf.fit(X_train, y_train.ravel())
-print(clf.score(X_val, y_val))
+print(f"Accuracy: {clf.score(X_val, y_val)}")

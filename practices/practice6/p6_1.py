@@ -77,11 +77,11 @@ def choose_params(X, y, X_val, y_val):
             if scores[c][s] > scores[best_score[0]][best_score[1]]:
                 best_score[0] = c
                 best_score[1] = s
-    #print(scores[best_score[0]][best_score[1]])
+    #print(f"Best accuracy: {scores[best_score[0]][best_score[1]] * 100} %")
     return (C_vec[best_score[0]], sigma_vec[best_score[1]])
 
 #draw_graphic(X3, y3)
 #c, sigma = choose_params(X3, y3, X_val, y_val)
 #gaussian_kernel(X3, y3, c, sigma)
 
-plt.show()
+#plt.show()
