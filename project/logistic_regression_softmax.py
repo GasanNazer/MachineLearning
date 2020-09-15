@@ -4,16 +4,41 @@ import h5py
 import scipy
 from PIL import Image
 from scipy import ndimage
-from utils import load_images_from_folder
+from utils import load_images_from_folder, print_images
 
 Y = [] # labels are created during execution time
 num_px = 64 # during execution images are resized to 64x64x3. This way we lose their quality but we save computational time. 
 C = 3 # number of classes to detect
 
 
-images = load_images_from_folder(Y)
-plt.imshow(images[:,0].reshape((num_px, num_px, 3))) # showing the first example
-X = images / 255 # normalize dataset
+#images = load_images_from_folder(Y)
+#plt.imshow(images[:,0].reshape((num_px, num_px, 3))) # showing the first example
+#X = images / 255 # normalize dataset
+
+folder_train = "images_train"
+folder_dev = "images_dev"
+folder_test = "images_test"
+
+images_train = load_images_from_folder(Y, folder= folder_train)
+X_train = images_train / 255 # normalize dataset
+
+images_dev = load_images_from_folder(Y, folder= folder_dev)
+X_dev = images_dev / 255 # normalize dataset
+
+images_test = load_images_from_folder(Y, folder= folder_test)
+X_test = images_test / 255 # normalize dataset
+
+
+print(images_train.shape)
+print(images_dev.shape)
+print(images_test.shape)
+
+
+
+
+
+'''
+
 Y = np.array(Y) # convert the labels Y list into a numpy array
 
 ### activation funtion - softmax
@@ -131,3 +156,5 @@ plt.show()
 # include dev, test sets
 # include learning curves
 # Precision/Recall
+
+'''
