@@ -46,7 +46,6 @@ def load_images_from_folder(Y, num_px = 64, folder="images"):
     for subfolder in os.listdir(folder):
         subfolder_complete_path = os.path.join(folder, subfolder)
         for filename in os.listdir(subfolder_complete_path):
-            create_label(Y, subfolder)
             img = np.array(imageio.imread(os.path.join(subfolder_complete_path, filename)))
             if img is not None:
                 img = np.array(Image.fromarray(img).resize(size=(num_px, num_px))) # resize the image
@@ -58,6 +57,7 @@ def load_images_from_folder(Y, num_px = 64, folder="images"):
                 else:
                     img = np.reshape(img, (1, num_px*num_px*3)).T
                     images.append(img)
+                    create_label(Y, subfolder)
     images = np.array(images)
     return np.reshape(images, (images.shape[0], images.shape[1])).T
 

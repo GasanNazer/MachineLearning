@@ -6,7 +6,9 @@ from PIL import Image
 from scipy import ndimage
 from utils import load_images_from_folder, print_images
 
-Y = [] # labels are created during execution time
+Y_train = [] # labels are created during execution time
+Y_dev = []
+Y_test = []
 num_px = 64 # during execution images are resized to 64x64x3. This way we lose their quality but we save computational time. 
 C = 3 # number of classes to detect
 
@@ -19,27 +21,24 @@ folder_train = "images_train"
 folder_dev = "images_dev"
 folder_test = "images_test"
 
-images_train = load_images_from_folder(Y, folder= folder_train)
+images_train = load_images_from_folder(Y_train, folder= folder_train)
 X_train = images_train / 255 # normalize dataset
 
-images_dev = load_images_from_folder(Y, folder= folder_dev)
+images_dev = load_images_from_folder(Y_dev, folder= folder_dev)
 X_dev = images_dev / 255 # normalize dataset
 
-images_test = load_images_from_folder(Y, folder= folder_test)
+images_test = load_images_from_folder(Y_test, folder= folder_test)
 X_test = images_test / 255 # normalize dataset
 
 
-print(images_train.shape)
-print(images_dev.shape)
-print(images_test.shape)
+#print(images_train.shape)
+#print(images_dev.shape)
+#print(images_test.shape)
 
 
-
-
-
-'''
-
-Y = np.array(Y) # convert the labels Y list into a numpy array
+Y_train = np.array(Y_train) # convert the labels Y list into a numpy array
+Y_dev = np.array(Y_dev)
+Y_test = np.array(Y_test)
 
 ### activation funtion - softmax
 def softmax(z):
@@ -74,8 +73,8 @@ def propagate(w, b, X, Y):
     return grads, cost
     
 
-w, b = initialize(X.shape[0])
-grads, cost = propagate(w, b, X, Y)
+w, b = initialize(X_train.shape[0])
+grads, cost = propagate(w, b, X_train, Y_train)
 
 
 def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False): # clean the code  
@@ -110,7 +109,7 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False): # c
     return params, grads, costs
 
 # Running the model
-params, grads, costs = optimize(w, b, X, Y, num_iterations= 100, learning_rate = 0.05, print_cost = True)
+params, grads, costs = optimize(w, b, X_train, Y_train, num_iterations= 1000, learning_rate = 0.05, print_cost = True)
 
 print("Final weights, bias and gradients: ")
 print ("w = " + str(params["w"]))
@@ -119,19 +118,23 @@ print ("dw = " + str(grads["dw"]))
 print ("db = " + str(grads["db"]))
 
 
-def one_hot_reverse():
+def one_hot_reverse(Y):
     H = np.argmax(Y, axis=1)
     return H.reshape((len(H), 1))
 
-def predict(w, b, X):
+def predict(w, b, X, Y):
     A = softmax(np.dot(w.T, X) + b)
     
     index_max = np.argmax(A, axis = 0)
     index_max = index_max.reshape((len(index_max), 1))
-    accuracy = np.sum(one_hot_reverse() % C == index_max) / Y.shape[0]
+    accuracy = np.sum(one_hot_reverse(Y) % C == index_max) / Y.shape[0]
     print("Accuracy: " + str(accuracy * 100) + '%')
-    
-predict(params["w"], params["b"], X)
+
+print("Train prediction")
+predict(params["w"], params["b"], X_train, Y_train)
+
+print("Test prediction")
+predict(params["w"], params["b"], X_test, Y_test)
 
 def predict_one_example(index):
     softmax_picture = softmax(np.dot(X[:,index], params["w"]) + params["b"])
@@ -148,7 +151,7 @@ def predict_one_example(index):
     plt.xlabel(message)
     plt.imshow(images[:,index].reshape((num_px, num_px, 3)))
 
-predict_one_example(2001)
+#predict_one_example(2001)
 
 plt.show()
 
@@ -156,5 +159,3 @@ plt.show()
 # include dev, test sets
 # include learning curves
 # Precision/Recall
-
-'''
