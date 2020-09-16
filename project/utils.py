@@ -199,3 +199,25 @@ def prepare_dataset():
     covert_all_png_images_to_jpg()
     separate_dataset_folders()
 
+
+
+def calculate_probability(X, Y, theta, C=3):
+    prediction = np.dot(X, theta.T)
+    index_max = np.argmax(prediction, axis = 1)
+    index_max = index_max.reshape((len(index_max), 1))
+    error = np.sum(np.argmax(Y, axis = 1).reshape((len(Y), 1)) == index_max) / Y.shape[0]
+    print("Accuracy " + str(error * 100) + '%')
+    
+    precision = np.zeros(C)
+    recall = np.zeros(C)
+    for c in range(C):
+        precision[c] = np.sum((Y[:, c] == 1) * (index_max == c).ravel()) / np.sum(index_max == c)
+        recall[c] = np.sum((Y[:, c] == 1) * (index_max == c).ravel()) / np.sum(Y[:, c] == 1)
+    print("precision dogs: " + str(precision[0]))
+    print("precision cats: " + str(precision[1]))
+    print("precision elephants: " + str(precision[2]))
+
+    print("recall dogs: " + str(recall[0]))
+    print("recall dogs: " + str(recall[1]))
+    print("recall dogs: " + str(recall[2]))
+
