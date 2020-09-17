@@ -4,11 +4,11 @@ import scipy
 from scipy import optimize as opt
 from scipy import ndimage
 from utils import load_images_from_folder
-from utils import calculate_probability
 from sklearn.preprocessing import PolynomialFeatures
 
 Y_train = [] # labels are created during execution time
 Y_dev = []
+Y_test = []
 num_px = 64 # during execution images are resized to 64x64x3. This way we lose their quality but we save computational time. 
 C = 3 # number of classes to detect
 
@@ -20,10 +20,16 @@ images_dev = load_images_from_folder(Y_dev, folder="images_dev")
 X_dev = images_dev / 255 # normalize dataset
 Y_dev = np.array(Y_dev) # convert the labels Y list into a numpy array
 
+images_test = load_images_from_folder(Y_test, folder="images_test")
+X_test = images_test / 255 # normalize dataset
+Y_test = np.array(Y_test) # convert the labels Y list into a numpy array
+
 X_train = X_train.T
 X_train = np.hstack([np.ones([len(X_train), 1]), X_train])
 X_dev = X_dev.T
 X_dev = np.hstack([np.ones([len(X_dev), 1]), X_dev])
+X_test = X_test.T
+X_test = np.hstack([np.ones([len(X_test), 1]), X_test])
 
 def sigmoid(z):
     return 1 / (1 + np.exp(-z))
@@ -102,12 +108,37 @@ def choose_lambda_acc(X, Y, X_val, Y_val, C=3):
     print(accuracy_dots)
     print(accuracy_val)
     plt.show()
+
+def calculate_probability(X, Y, theta, C=3):
+    prediction = np.dot(X, theta.T)
+    index_max = np.argmax(prediction, axis = 1)
+    index_max = index_max.reshape((len(index_max), 1))
+    accuracy = np.sum(np.argmax(Y, axis = 1).reshape((len(Y), 1)) == index_max) / Y.shape[0]
+    print("Accuracy " + str(accuracy * 100) + '%')
+    
+    precision = np.zeros(C)
+    recall = np.zeros(C)
+    for c in range(C):
+        precision[c] = np.sum((Y[:, c] == 1) * (index_max == c).ravel()) / np.sum(index_max == c)
+        recall[c] = np.sum((Y[:, c] == 1) * (index_max == c).ravel()) / np.sum(Y[:, c] == 1)
+    print("precision dogs: " + str(precision[0]))
+    print("precision cats: " + str(precision[1]))
+    print("precision elephants: " + str(precision[2]))
+
+    print("recall dogs: " + str(recall[0]))
+    print("recall cats: " + str(recall[1]))
+    print("recall elephants: " + str(recall[2]))
     
 
 #choose_lambda(X_train, Y_train, X_dev, Y_dev, 3)
-choose_lambda_acc(X_train, Y_train, X_dev, Y_dev, 3)
-#thetas = oneVsAll(X_train, Y_train, C, 300)
-#calculate_probability(X_train, Y_train, thetas) 
+#choose_lambda_acc(X_train, Y_train, X_dev, Y_dev, 3)
+thetas = oneVsAll(X_train, Y_train, C, 300)
+print("Accuracy training set:")
+calculate_probability(X_train, Y_train, thetas) 
+print("Accuracy validation set:")
+calculate_probability(X_dev, Y_dev, thetas) 
+print("Accuracy test set:")
+calculate_probability(X_test, Y_test, thetas)
 
 #theta = np.zeros(X.shape[1])
 #print(theta.shape)
