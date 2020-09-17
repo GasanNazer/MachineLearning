@@ -64,8 +64,25 @@ def oneVsAll(X, Y, n_labels, reg):
     theta = np.array(theta)
     return theta
 
-def choose_lambda_acc(X, Y, X_val, Y_val, C=3):
+def choose_lambda(X, y, X_val, y_val, C):
     lambd = np.array([0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100])
+    error_dots = np.zeros(len(lambd))
+    error_val = np.zeros(len(lambd))
+    for i in range(len(lambd)):
+        theta = oneVsAll(X, y, C, lambd[i])
+        for c in range(C):
+            error_dots[i] += gradient(theta[c, :], X, y, lambd[i])[0]
+            error_val[i] += gradient(theta[c, :], X_val, y_val, lambd[i])[0]
+        error_dots[i] /= C
+        error_val[i] /= C
+    plt.plot(lambd, error_dots)
+    plt.plot(lambd, error_val)
+    print(error_dots)
+    print(error_val)
+    plt.show()
+
+def choose_lambda_acc(X, Y, X_val, Y_val, C=3):
+    lambd = np.array([0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100, 300, 1000])
     accuracy_dots = np.zeros(len(lambd))
     accuracy_val = np.zeros(len(lambd))
 
@@ -85,12 +102,11 @@ def choose_lambda_acc(X, Y, X_val, Y_val, C=3):
     print(accuracy_dots)
     print(accuracy_val)
     plt.show()
-
     
 
 #choose_lambda(X_train, Y_train, X_dev, Y_dev, 3)
 choose_lambda_acc(X_train, Y_train, X_dev, Y_dev, 3)
-#thetas = oneVsAll(X_train, Y_train, C, 10)
+#thetas = oneVsAll(X_train, Y_train, C, 300)
 #calculate_probability(X_train, Y_train, thetas) 
 
 #theta = np.zeros(X.shape[1])

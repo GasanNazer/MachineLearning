@@ -221,20 +221,4 @@ def calculate_probability(X, Y, theta, C=3):
     print("recall cats: " + str(recall[1]))
     print("recall elephants: " + str(recall[2]))
 
-def choose_lambda(X, y, X_val, y_val, C):
-    lambd = np.array([0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100])
-    error_dots = np.zeros(len(lambd))
-    error_val = np.zeros(len(lambd))
-    for i in range(len(lambd)):
-        theta = oneVsAll(X, y, C, lambd[i])
-        for c in range(C):
-            error_dots[i] += gradient(theta[c, :], X, y, lambd[i])[0]
-            error_val[i] += gradient(theta[c, :], X_val, y_val, lambd[i])[0]
-        error_dots[i] /= C
-        error_val[i] /= C
-    plt.plot(lambd, error_dots)
-    plt.plot(lambd, error_val)
-    print(error_dots)
-    print(error_val)
-    plt.show()
 
