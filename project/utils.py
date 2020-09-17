@@ -218,8 +218,8 @@ def calculate_probability(X, Y, theta, C=3):
     print("precision elephants: " + str(precision[2]))
 
     print("recall dogs: " + str(recall[0]))
-    print("recall dogs: " + str(recall[1]))
-    print("recall dogs: " + str(recall[2]))
+    print("recall cats: " + str(recall[1]))
+    print("recall elephants: " + str(recall[2]))
 
 def choose_lambda(X, y, X_val, y_val, C):
     lambd = np.array([0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100])
