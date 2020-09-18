@@ -41,19 +41,14 @@ def cost(theta, X, Y, lambd):
     return (- 1 / (len(X))) * np.sum(Y * np.log(A) + (1 - Y) * np.log(1 - A  + 1e-6)) + reg
 
 def gradient(theta, X, Y, lambd):
-    #print(theta.shape)
     theta = theta.reshape((len(theta), 1))
-    #print(theta.shape)
     A = sigmoid(np.matmul(X, theta))
     identity = np.identity(theta.shape[0])
     identity[0][0] = 0
-    #print(((np.dot(X.T, (A - Y)) / len(Y) + (lambd / len(X)) * np.dot(identity, theta)).ravel()).shape)
     return (np.dot(X.T, (A - Y)) / len(Y) + (lambd / len(X)) * np.dot(identity, theta)).ravel()
 
 def model(X, Y, lambd):
     theta = np.zeros(X.shape[1])
-    #print(X.shape[1])
-    #print(theta.shape)
     result = opt.fmin_tnc(func=cost, x0=theta, fprime=gradient, args = (X, Y, lambd), maxfun=50)
     theta = result[0]
     return theta
@@ -128,6 +123,16 @@ def calculate_probability(X, Y, theta, C=3):
     print("recall dogs: " + str(recall[0]))
     print("recall cats: " + str(recall[1]))
     print("recall elephants: " + str(recall[2]))
+
+    print("f1 score dogs: " + str(2 * precision[0] * recall[0] / (precision[0] + recall[0])))
+    print("f1 score cats: " + str(2 * precision[1] * recall[1] / (precision[1] + recall[1])))
+    print("f1 score elephants: " + str(2 * precision[2] * recall[2] / (precision[2] + recall[2])))
+
+    print("average dogs: " + str((precision[0] + recall[0]) / 2))
+    print("average cats: " + str((precision[1] + recall[1]) / 2))
+    print("average elephants: " + str((precision[1] + recall[1]) / 2))
+
+
     
 
 #choose_lambda(X_train, Y_train, X_dev, Y_dev, 3)
