@@ -79,6 +79,8 @@ grads, cost = propagate(w, b, X_train, Y_train)
 
 def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False): # clean the code  
     costs = []
+
+    print(f"Learning rate {learning_rate}")
     
     for i in range(num_iterations):
         # Compute gradients and cost
@@ -108,16 +110,6 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False): # c
     
     return params, grads, costs
 
-# Running the model
-params, grads, costs = optimize(w, b, X_train, Y_train, num_iterations= 1000, learning_rate = 0.05, print_cost = True)
-
-print("Final weights, bias and gradients: ")
-print ("w = " + str(params["w"]))
-print ("b = " + str(params["b"]))
-print ("dw = " + str(grads["dw"]))
-print ("db = " + str(grads["db"]))
-
-
 def one_hot_reverse(Y):
     H = np.argmax(Y, axis=1)
     return H.reshape((len(H), 1))
@@ -130,11 +122,17 @@ def predict(w, b, X, Y):
     accuracy = np.sum(one_hot_reverse(Y) % C == index_max) / Y.shape[0]
     print("Accuracy: " + str(accuracy * 100) + '%')
 
+'''
 print("Train prediction")
 predict(params["w"], params["b"], X_train, Y_train)
 
 print("Test prediction")
 predict(params["w"], params["b"], X_test, Y_test)
+
+
+print(params["b"].shape)
+print(params["w"].shape)
+'''
 
 def predict_one_example(index):
     softmax_picture = softmax(np.dot(X[:,index], params["w"]) + params["b"])
@@ -155,7 +153,76 @@ def predict_one_example(index):
 
 plt.show()
 
-
-# include dev, test sets
-# include learning curves
 # Precision/Recall
+
+
+def choose_rate(X, y, X_val, y_val):
+    lr = np.array([0, 0.001, 0.003, 0.01]) #0.03, 0.1, 0.3
+    costs_X = np.zeros(len(lr))
+    costs_X_val = np.zeros(len(lr))
+    for rate in range(len(lr)):
+            _, _, cost_X = optimize(w, b, X, y, num_iterations= 500, learning_rate = lr[rate], print_cost = True)
+            costs_X[rate] = cost_X[-1]
+            _, _, cost_X_val = optimize(w, b, X_val, y_val, num_iterations= 500, learning_rate = lr[rate], print_cost = True)
+            costs_X_val[rate] = cost_X_val[-1]
+    print(costs_X)
+    print(costs_X_val)
+    plt.plot(lr, costs_X)
+    plt.xlabel("learning rate")
+    plt.plot(lr, costs_X_val)
+    plt.ylabel("cost")
+    plt.title("Choosing correct learning rate")
+    plt.show()
+
+#choose_rate(X_train, Y_train, X_dev, Y_dev)
+
+
+def choose_iterations(X, y, X_val, y_val):
+    lr = np.array([100, 200, 400, 500, 800, 1000])
+    costs_X = np.zeros(len(lr))
+    costs_X_val = np.zeros(len(lr))
+    for rate in range(len(lr)):
+            _, _, cost_X = optimize(w, b, X, y, num_iterations= lr[rate], learning_rate = 0.001, print_cost = True)
+            costs_X[rate] = cost_X[-1]
+            _, _, cost_X_val = optimize(w, b, X_val, y_val, num_iterations= lr[rate], learning_rate = 0.001, print_cost = True)
+            costs_X_val[rate] = cost_X_val[-1]
+    print(costs_X)
+    print(costs_X_val)
+    plt.plot(lr, costs_X)
+    plt.xlabel("iterations")
+    plt.plot(lr, costs_X_val)
+    plt.ylabel("cost")
+    plt.show()
+
+#choose_iterations(X_train, Y_train, X_dev, Y_dev)
+
+# Running the model
+params, grads, costs = optimize(w, b, X_train, Y_train, num_iterations= 100, learning_rate = 0.001, print_cost = True)
+
+def calculate_probability(w, b, X, Y, C=3):
+    A = softmax(np.dot(w.T, X) + b)
+    
+    index_max = np.argmax(A, axis = 0)
+    index_max = index_max.reshape((len(index_max), 1))
+    accuracy = np.sum(one_hot_reverse(Y) % C == index_max) / Y.shape[0]
+    print("Accuracy: " + str(accuracy * 100) + '%')
+    
+    precision = np.zeros(C)
+    recall = np.zeros(C)
+    for c in range(C):
+        precision[c] = np.sum((Y[:, c] == 1) * (index_max == c).ravel()) / np.sum(index_max == c)
+        recall[c] = np.sum((Y[:, c] == 1) * (index_max == c).ravel()) / np.sum(Y[:, c] == 1)
+    print("precision dogs: " + str(precision[0]))
+    print("precision cats: " + str(precision[1]))
+    print("precision elephants: " + str(precision[2]))
+
+    print("recall dogs: " + str(recall[0]))
+    print("recall cats: " + str(recall[1]))
+    print("recall elephants: " + str(recall[2]))
+
+print("Accuracy training set:")
+calculate_probability(params["w"], params["b"], X_train, Y_train)
+print("Accuracy validation set:")
+calculate_probability(params["w"], params["b"], X_dev, Y_dev)
+print("Accuracy test set:")
+calculate_probability(params["w"], params["b"], X_test, Y_test)

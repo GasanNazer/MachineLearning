@@ -42,6 +42,7 @@ def covert_all_png_images_to_jpg():
 
 
 def load_images_from_folder(Y, num_px = 64, folder="images"):
+    print(f"Loading {folder}.")
     images = []
     for subfolder in os.listdir(folder):
         subfolder_complete_path = os.path.join(folder, subfolder)
@@ -198,8 +199,4 @@ def prepare_dataset():
     change_folders_names()
     covert_all_png_images_to_jpg()
     separate_dataset_folders()
-
-
-
-
 
