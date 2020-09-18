@@ -279,8 +279,8 @@ def calculate_probability(parameters, X, Y, C=3):
     print("recall elephants: " + str(recall[2]))
 
     print("average dogs: " + str((precision[0] + recall[0]) / 2))
-    print("average dogs: " + str((precision[1] + recall[1]) / 2))
-    print("average dogs: " + str((precision[2] + recall[2]) / 2))
+    print("average cats: " + str((precision[1] + recall[1]) / 2))
+    print("average elephants: " + str((precision[2] + recall[2]) / 2))
 
     f1_score_dogs = 2 * precision[0] * recall[0] / (precision[0] + recall[0])
     print("f1 score dogs: " + str(f1_score_dogs))
