@@ -13,10 +13,6 @@ num_px = 64 # during execution images are resized to 64x64x3. This way we lose t
 C = 3 # number of classes to detect
 
 
-#images = load_images_from_folder(Y)
-#plt.imshow(images[:,0].reshape((num_px, num_px, 3))) # showing the first example
-#X = images / 255 # normalize dataset
-
 folder_train = "images_train"
 folder_dev = "images_dev"
 folder_test = "images_test"
@@ -31,16 +27,11 @@ images_test = load_images_from_folder(Y_test, folder= folder_test)
 X_test = images_test / 255 # normalize dataset
 
 
-#print(images_train.shape)
-#print(images_dev.shape)
-#print(images_test.shape)
-
-
 Y_train = np.array(Y_train) # convert the labels Y list into a numpy array
 Y_dev = np.array(Y_dev)
 Y_test = np.array(Y_test)
 
-### activation funtion - softmax
+### activation function - softmax
 def softmax(z):
     t = np.exp(z)
     return t / np.sum(t, axis= 0)
@@ -122,18 +113,6 @@ def predict(w, b, X, Y):
     accuracy = np.sum(one_hot_reverse(Y) % C == index_max) / Y.shape[0]
     print("Accuracy: " + str(accuracy * 100) + '%')
 
-'''
-print("Train prediction")
-predict(params["w"], params["b"], X_train, Y_train)
-
-print("Test prediction")
-predict(params["w"], params["b"], X_test, Y_test)
-
-
-print(params["b"].shape)
-print(params["w"].shape)
-'''
-
 def predict_one_example(index):
     softmax_picture = softmax(np.dot(X[:,index], params["w"]) + params["b"])
     type_animal = np.argmax(softmax_picture)
@@ -178,7 +157,7 @@ def choose_rate(X, y, X_val, y_val):
 
 
 def choose_iterations(X, y, X_val, y_val):
-    lr = np.array([100, 200, 400, 500, 800, 1000])
+    lr = np.array([100, 200, 400, 500, 800, 1000, 2000])
     costs_X = np.zeros(len(lr))
     costs_X_val = np.zeros(len(lr))
     for rate in range(len(lr)):
@@ -195,9 +174,6 @@ def choose_iterations(X, y, X_val, y_val):
     plt.show()
 
 #choose_iterations(X_train, Y_train, X_dev, Y_dev)
-
-# Running the model
-params, grads, costs = optimize(w, b, X_train, Y_train, num_iterations= 100, learning_rate = 0.001, print_cost = True)
 
 def calculate_probability(w, b, X, Y, C=3):
     A = softmax(np.dot(w.T, X) + b)
@@ -219,6 +195,20 @@ def calculate_probability(w, b, X, Y, C=3):
     print("recall dogs: " + str(recall[0]))
     print("recall cats: " + str(recall[1]))
     print("recall elephants: " + str(recall[2]))
+
+    print("average dogs: " + str((precision[0] + recall[0]) / 2))
+    print("average cats: " + str((precision[1] + recall[1]) / 2))
+    print("average elephants: " + str((precision[2] + recall[2]) / 2))
+
+    f1_score_dogs = 2 * precision[0] * recall[0] / (precision[0] + recall[0])
+    print("f1 score dogs: " + str(f1_score_dogs))
+    f1_score_cats = 2 * precision[1] * recall[1] / (precision[1] + recall[1])
+    print("f1 score cats: " + str(f1_score_cats))
+    f1_score_elephants = 2 * precision[2] * recall[2] / (precision[2] + recall[2])
+    print("f1 score elephants: " + str(f1_score_elephants))
+
+# Running the model
+params, grads, costs = optimize(w, b, X_train, Y_train, num_iterations= 400, learning_rate = 0.001, print_cost = True)
 
 print("Accuracy training set:")
 calculate_probability(params["w"], params["b"], X_train, Y_train)
