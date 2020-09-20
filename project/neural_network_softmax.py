@@ -330,6 +330,7 @@ def choose_iterations(X, y, X_val, y_val):
 #choose_iterations(X_train, Y_train, X_dev, Y_dev)
 
 params, _ = L_layer_model(X_test, Y_test, layers_dims, learning_rate = 0.03, num_iterations = 800, print_cost = True, C = C)
+#params, _ = L_layer_model(X_test, Y_test, layers_dims, learning_rate = 0.03, num_iterations = 100, print_cost = True, C = C)
 
 print("Accuracy training set:")
 calculate_probability(params, X_train, Y_train)
@@ -337,3 +338,52 @@ print("Accuracy validation set:")
 calculate_probability(params, X_dev, Y_dev)
 print("Accuracy test set:")
 calculate_probability(params, X_test, Y_test)
+
+Y = []
+
+test_hq = load_images_from_folder(Y, num_px = 256 ,folder = folder_test)
+test_hq = test_hq/256
+
+def predict_one_example_nn(index, X, parameters, C=3):
+    probas, caches = L_model_forward(X, parameters, C)
+    type_animal = np.argmax(probas, axis = 0)
+    message = ""
+    if type_animal[index] == 0:
+        message += "I am a dog "
+    elif type_animal[index] == 1:
+        message += "I am a cat"
+    elif type_animal[index] == 2:
+        message += "I am an elephant"
+    probability = probas[:,index][np.argmax(probas[:,index])]
+    message += " with probability of " + "{:.2f}".format(probability * 100) + "%."
+    plt.figure()
+    plt.xlabel(message)
+    plt.imshow(X[:,index].reshape((num_px, num_px, 3)))
+    plt.show()
+
+    plt.figure()
+    plt.xlabel(message)
+    plt.imshow(test_hq[:,index].reshape((256, 256, 3)))
+    plt.show()
+
+    
+
+
+predict_one_example_nn(2, X_test, params)
+predict_one_example_nn(20, X_test, params)
+predict_one_example_nn(100, X_test, params)
+predict_one_example_nn(110, X_test, params)
+
+predict_one_example_nn(150, X_test, params)
+predict_one_example_nn(160, X_test, params)
+predict_one_example_nn(151, X_test, params)
+predict_one_example_nn(161, X_test, params)
+predict_one_example_nn(152, X_test, params)
+predict_one_example_nn(162, X_test, params)
+
+predict_one_example_nn(290, X_test, params)
+predict_one_example_nn(320, X_test, params)
+
+predict_one_example_nn(330, X_test, params)
+predict_one_example_nn(340, X_test, params)
+
