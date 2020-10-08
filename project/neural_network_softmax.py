@@ -366,9 +366,7 @@ def predict_one_example_nn(index, X, parameters, C=3):
     plt.imshow(test_hq[:,index].reshape((256, 256, 3)))
     plt.show()
 
-    
-
-
+'''
 predict_one_example_nn(2, X_test, params)
 predict_one_example_nn(20, X_test, params)
 predict_one_example_nn(100, X_test, params)
@@ -387,3 +385,7 @@ predict_one_example_nn(320, X_test, params)
 predict_one_example_nn(330, X_test, params)
 predict_one_example_nn(340, X_test, params)
 
+'''
+
+for i in range(280, 360):
+    predict_one_example_nn(i, X_test, params)
